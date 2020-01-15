@@ -863,7 +863,7 @@
             set +e
 
             export CICO_API_KEY=$(cat ~/duffy.key )
-
+            cp ~/artifacts.key .
             get_cico_node() {{
                 # get node
                 n=1
@@ -1621,19 +1621,13 @@
         <<: *vault_defaults
         secret:
             - *quay-eclipse-che-credentials
-    trigger:
-            - github
-            
-    <<: *job_template_defaults
+            - *eclipse-che-oss-sonatype 
+    <<: *job_template_build_defaults
     
 - job-template:
     name: '{ci_project}-{git_repo}-che-nightly-test-master'
-    wrappers:
-    - vault-secrets:
-        <<: *vault_defaults
-        secrets: 
-            - *quay-eclipse-che-credentials
-
+    triggers:
+        - timed: 'H 0 * * *'
     <<: *eclipse-che-automation-template
 
 
